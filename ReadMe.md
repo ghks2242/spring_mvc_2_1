@@ -18,3 +18,17 @@
 ~~~
 https://docs.spring.io/spring-boot/appendix/application-properties/index.html#appendix.application-properties.templating
 
+
+### th:object
+~~~ 
+th:object 를 사용하면 
+하위 태그에 th:filed 사용시 *{} 별표를 붙이면 th:object에 종속되어있다는걸 표현하여 사용할수있다.
+ex) th:object="${item}"
+    th:filed="*{itemName}"
+    
+사용안할시 
+ex) th:filed="${item.itemName}"
+
+th:filed 는 id 와 name 을 value 자동으로 만들어준다
+하지만 인텔리제이에서 라벨 for 랑 같이없으면 에러를 표출해서 남겨둘떄도있다
+~~~
