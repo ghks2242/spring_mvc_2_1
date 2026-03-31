@@ -3,19 +3,32 @@ package hello.itemservice.web.form;
 import hello.itemservice.domain.item.Item;
 import hello.itemservice.domain.item.ItemRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @Controller
 @RequestMapping("/form/items")
 @RequiredArgsConstructor
 public class FormItemController {
 
     private final ItemRepository itemRepository;
+
+    @ModelAttribute("regions")
+    public Map<String, String> regions() {
+        Map<String, String> regions = new LinkedHashMap<>();
+        regions.put("SEOUL", "서울");
+        regions.put("BUSAN", "부산");
+        regions.put("JEJU", "제주");
+        return regions;
+    }
 
     @GetMapping
     public String items(Model model) {
@@ -33,12 +46,24 @@ public class FormItemController {
 
     @GetMapping("/add")
     public String addForm(Model model) {
-//        model.addAttribute("item", new Item());
+        model.addAttribute("item", new Item());
+
+        // 지금 여기 해당하는 소스는 등록 뿐아니라 수정이나 상세에도 모두 중복되는소스이다
+        // 이걸 스프링부트에서는 24~31 번째 줄처럼해놓으면 이컨트롤러를 호출하는 모든곳에서는 regions 해당 변수명으로 model에 담긴다
+//        Map<String, String> regions = new LinkedHashMap<>();
+//        regions.put("SEOUL", "서울");
+//        regions.put("BUSAN", "부산");
+//        regions.put("JEJU", "제주");
+//        model.addAttribute("regions", regions);
+        //
         return "form/addForm";
     }
 
     @PostMapping("/add")
     public String addItem(@ModelAttribute Item item, RedirectAttributes redirectAttributes) {
+        log.info("item open={}", item.getOpen());
+        log.info("item regions={}", item.getRegions());
+
         Item savedItem = itemRepository.save(item);
         redirectAttributes.addAttribute("itemId", savedItem.getId());
         redirectAttributes.addAttribute("status", true);
